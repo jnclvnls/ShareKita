@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #F8FAFC;
+    color: #0F172A;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    overflow-x: hidden;
+  }
+}
+
+/* Custom scrollbar for mobile drawers and preview lists */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.22);
+}
+
+@keyframes sonar-wave {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.9;
+  }
+  50% {
+    opacity: 0.45;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+.animate-sonar-1 {
+  animation: sonar-wave 3s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+
+.animate-sonar-2 {
+  animation: sonar-wave 3s cubic-bezier(0, 0.2, 0.8, 1) infinite 1s;
+}
+
+.animate-sonar-3 {
+  animation: sonar-wave 3s cubic-bezier(0, 0.2, 0.8, 1) infinite 2s;
+}
+
+@keyframes beam-flow {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+.animate-beam {
+  background-size: 200% 100%;
+  animation: beam-flow 1.5s linear infinite;
+}
