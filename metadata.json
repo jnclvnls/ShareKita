@@ -1,0 +1,10 @@
+{
+  "name": "Remix ShareKita — Nearby File Transfer",
+  "description": "Privacy-first peer-to-peer mobile file transfer app for classrooms and campus laboratories with QR session pairing, real-time speed monitoring, and interrupted-transfer recovery.",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
