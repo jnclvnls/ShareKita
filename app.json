@@ -55,6 +55,11 @@
       "bundler": "metro"
     },
     "plugins": [],
-    "scheme": "sharekita"
+    "scheme": "sharekita",
+    "extra": {
+      "eas": {
+        "projectId": "c3445ea3-67f5-4013-898e-2e7c0229cf5e"
+      }
+    }
   }
 }
