@@ -12,3 +12,6 @@ dist/
 .env.local
 *.apk
 *.aab
+
+*.zip
+desktop.ini
