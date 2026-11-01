@@ -30,6 +30,13 @@ interface ConnectedPeer {
 }
 
 const activePeers = new Map<string, ConnectedPeer>();
+const pendingSessions = new Map<string, { peerId: string; expiresAt: number }>();
+const pairedPeers = new Map<string, string>();
+
+function sendToPeer(peerId: string, message: unknown) {
+  const peer = activePeers.get(peerId);
+  if (peer?.ws.readyState === WebSocket.OPEN) peer.ws.send(JSON.stringify(message));
+}
 
 function getLocalIpAddresses(): string[] {
   const interfaces = os.networkInterfaces();
@@ -290,6 +297,56 @@ async function startServer() {
             break;
           }
 
+          case 'create-session': {
+            if (!peerId || !activePeers.has(peerId)) break;
+            for (const [code, session] of pendingSessions) {
+              if (session.peerId === peerId || session.expiresAt <= Date.now()) pendingSessions.delete(code);
+            }
+            let code = '';
+            do { code = String(Math.floor(100000 + Math.random() * 900000)); } while (pendingSessions.has(code));
+            pendingSessions.set(code, { peerId, expiresAt: Date.now() + 5 * 60 * 1000 });
+            ws.send(JSON.stringify({ type: 'session-created', code, expiresAt: Date.now() + 5 * 60 * 1000 }));
+            break;
+          }
+
+          case 'join-session': {
+            const code = String(message.code || '').trim();
+            const session = pendingSessions.get(code);
+            if (!peerId || !activePeers.has(peerId) || !session || session.expiresAt <= Date.now()) {
+              pendingSessions.delete(code);
+              ws.send(JSON.stringify({ type: 'session-error', message: 'This PIN is invalid or has expired.' }));
+              break;
+            }
+            if (session.peerId === peerId) {
+              ws.send(JSON.stringify({ type: 'session-error', message: 'Enter the PIN from another device.' }));
+              break;
+            }
+            pendingSessions.delete(code);
+            const host = activePeers.get(session.peerId);
+            const guest = activePeers.get(peerId);
+            if (!host || !guest) {
+              ws.send(JSON.stringify({ type: 'session-error', message: 'The other device disconnected.' }));
+              break;
+            }
+            pairedPeers.set(session.peerId, peerId);
+            pairedPeers.set(peerId, session.peerId);
+            sendToPeer(session.peerId, { type: 'paired', peer: { id: guest.id, name: guest.name, deviceType: guest.deviceType, os: guest.os } });
+            ws.send(JSON.stringify({ type: 'paired', peer: { id: host.id, name: host.name, deviceType: host.deviceType, os: host.os } }));
+            break;
+          }
+
+          case 'unpair': {
+            if (!peerId) break;
+            const otherId = pairedPeers.get(peerId);
+            pairedPeers.delete(peerId);
+            if (otherId) {
+              pairedPeers.delete(otherId);
+              sendToPeer(otherId, { type: 'peer-unpaired' });
+            }
+            ws.send(JSON.stringify({ type: 'peer-unpaired' }));
+            break;
+          }
+
           case 'ping': {
             if (peerId && activePeers.has(peerId)) {
               activePeers.get(peerId)!.lastSeen = Date.now();
@@ -307,15 +364,11 @@ async function startServer() {
           case 'transfer-resume':
           case 'transfer-complete': {
             // Route message directly to target peer
-            const targetId = message.targetPeerId;
-            if (targetId && activePeers.has(targetId)) {
-              const target = activePeers.get(targetId)!;
-              if (target.ws.readyState === WebSocket.OPEN) {
-                target.ws.send(JSON.stringify({
-                  ...message,
-                  fromPeerId: peerId,
-                }));
-              }
+            const targetId = message.targetPeerId || (peerId ? pairedPeers.get(peerId) : undefined);
+            if (targetId && peerId && pairedPeers.get(peerId) === targetId && activePeers.has(targetId)) {
+              sendToPeer(targetId, { ...message, fromPeerId: peerId });
+            } else if (peerId) {
+              sendToPeer(peerId, { type: 'transfer-error', transferId: message.transferId, message: 'Pair with a device before transferring files.' });
             }
             break;
           }
@@ -327,6 +380,13 @@ async function startServer() {
 
     ws.on('close', () => {
       if (peerId && activePeers.has(peerId)) {
+        for (const [code, session] of pendingSessions) if (session.peerId === peerId) pendingSessions.delete(code);
+        const pairedId = pairedPeers.get(peerId);
+        if (pairedId) {
+          pairedPeers.delete(peerId);
+          pairedPeers.delete(pairedId);
+          sendToPeer(pairedId, { type: 'peer-unpaired' });
+        }
         activePeers.delete(peerId);
 
         // Notify remaining peers

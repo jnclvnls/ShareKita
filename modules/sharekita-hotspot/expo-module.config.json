@@ -1,0 +1,9 @@
+{
+  "platforms": ["android", "apple"],
+  "android": {
+    "modules": ["com.sharekita.hotspot.ShareKitaHotspotModule"]
+  },
+  "apple": {
+    "modules": ["ShareKitaHotspotModule"]
+  }
+}

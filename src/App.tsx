@@ -45,10 +45,7 @@ export default function App() {
   const [device, setDevice] = useState<LocalDeviceIdentity>(getStoredDeviceIdentity);
   const [currentView, setCurrentView] = useState<AppView>('home');
   const [files, setFiles] = useState<TransferableFile[]>(INITIAL_CAMPUS_FILES);
-  const [selectedFileIds, setSelectedFileIds] = useState<string[]>([
-    INITIAL_CAMPUS_FILES[0].id,
-    INITIAL_CAMPUS_FILES[2].id,
-  ]);
+  const [selectedFileIds, setSelectedFileIds] = useState<string[]>([]);
   const [history, setHistory] = useState<TransferHistoryRecord[]>(getTransferHistory);
   
   // Modals & sub-flows
@@ -158,7 +155,7 @@ export default function App() {
   // Peer chosen on Radar or QR pairing
   const handleInitiateTransfer = (peer: PeerDevice, direction: 'send' | 'receive' = 'send') => {
     const selectedFiles = files.filter((f) => selectedFileIds.includes(f.id));
-    const filesToTransfer = selectedFiles.length > 0 ? selectedFiles : [files[0], files[1]];
+    const filesToTransfer = selectedFiles;
     const session = createTransferSession(direction, peer, filesToTransfer);
     session.status = 'transferring';
     setActiveSession(session);
@@ -199,7 +196,7 @@ export default function App() {
             mode="send"
             device={device}
             filesToSend={files.filter((f) => selectedFileIds.includes(f.id))}
-            onSelectPeer={(peer) => handleInitiateTransfer(peer, 'send')}
+            onSelectPeer={(peer: PeerDevice) => handleInitiateTransfer(peer, 'send')}
             onOpenQRCode={() => handleOpenQR('scan')}
             onBack={() => setCurrentView('file-picker')}
             realPeers={realPeers}
@@ -212,7 +209,7 @@ export default function App() {
             mode="receive"
             device={device}
             filesToSend={[]}
-            onSelectPeer={(peer) => handleInitiateTransfer(peer, 'receive')}
+            onSelectPeer={(peer: PeerDevice) => handleInitiateTransfer(peer, 'receive')}
             onOpenQRCode={() => handleOpenQR('show')}
             onBack={() => setCurrentView('home')}
             realPeers={realPeers}
@@ -224,7 +221,7 @@ export default function App() {
           <QRCodeModal
             initialTab={qrTab}
             device={device}
-            onConnectPeer={(peer) => handleInitiateTransfer(peer, qrTab === 'scan' ? 'send' : 'receive')}
+            onConnectPeer={(peer: PeerDevice) => handleInitiateTransfer(peer, qrTab === 'scan' ? 'send' : 'receive')}
             onBack={() => setCurrentView('home')}
           />
         );

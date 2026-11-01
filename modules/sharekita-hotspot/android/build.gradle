@@ -1,0 +1,15 @@
+plugins {
+  id 'com.android.library'
+  id 'expo-module-gradle-plugin'
+}
+
+group = 'com.sharekita.hotspot'
+version = '1.0.0'
+
+android {
+  namespace 'com.sharekita.hotspot'
+  defaultConfig {
+    versionCode 1
+    versionName '1.0.0'
+  }
+}

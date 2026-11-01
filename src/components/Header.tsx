@@ -50,9 +50,6 @@ export const Header: React.FC<HeaderProps> = ({
               <span className="font-extrabold text-base tracking-tight text-slate-900">
                 Share<span className="text-amber-500">Kita</span>
               </span>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 bg-amber-100/90 px-1.5 py-0.2 rounded-md">
-                P2P
-              </span>
             </div>
             <p className="text-[11px] text-slate-500 flex items-center gap-1 leading-none mt-0.5">
               <span className="font-medium">Nearby File Transfer</span>

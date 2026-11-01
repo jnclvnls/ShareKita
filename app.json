@@ -6,11 +6,6 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#F8FAFC"
-    },
     "assetBundlePatterns": [
       "**/*"
     ],
@@ -19,15 +14,17 @@
       "bundleIdentifier": "com.sharekita.app",
       "infoPlist": {
         "NSCameraUsageDescription": "ShareKita uses camera access to scan nearby transfer pairing QR codes.",
-        "NSLocalNetworkUsageDescription": "ShareKita needs local network access to discover nearby classroom/laboratory devices and transfer files without internet.",
+        "NSLocalNetworkUsageDescription": "ShareKita connects directly to a nearby phone on the same hotspot to transfer files. Nothing is uploaded.",
         "NSPhotoLibraryUsageDescription": "ShareKita requires photo library access to send and save received media files.",
-        "NSPhotoLibraryAddUsageDescription": "ShareKita saves received photos and videos to your photo library."
+        "NSPhotoLibraryAddUsageDescription": "ShareKita saves received photos and videos to your photo library.",
+        "UIFileSharingEnabled": true,
+        "LSSupportsOpeningDocumentsInPlace": true
       }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#F59E0B"
+        "backgroundColor": "#FFD21F"
       },
       "package": "com.sharekita.app",
       "permissions": [
@@ -40,6 +37,7 @@
         "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION",
         "ACCESS_WIFI_STATE",
+        "ACCESS_LOCAL_NETWORK",
         "CHANGE_WIFI_STATE",
         "BLUETOOTH",
         "BLUETOOTH_ADMIN",
@@ -47,14 +45,52 @@
         "BLUETOOTH_SCAN",
         "NEARBY_WIFI_DEVICES",
         "INTERNET",
-        "ACCESS_NETWORK_STATE"
+        "ACCESS_NETWORK_STATE",
+        "CHANGE_NETWORK_STATE",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
       ]
     },
     "web": {
       "favicon": "./assets/favicon.png",
       "bundler": "metro"
     },
-    "plugins": [],
-    "scheme": "sharekita"
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "ShareKita uses the camera to scan pairing QR codes."
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "minSdkVersion": 29,
+            "usesCleartextTraffic": true
+          },
+          "ios": {
+            "deploymentTarget": "15.1"
+          }
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash.png",
+          "backgroundColor": "#F8FAFC",
+          "imageWidth": 260,
+          "resizeMode": "contain"
+        }
+      ],
+      "expo-sharing"
+    ],
+    "scheme": "sharekita",
+    "extra": {
+      "eas": {
+        "projectId": "c3445ea3-67f5-4013-898e-2e7c0229cf5e"
+      }
+    },
+    "owner": "ciaocel"
   }
 }

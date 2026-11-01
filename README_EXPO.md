@@ -4,34 +4,6 @@ Privacy-first mobile peer-to-peer file transfer app built with **React Native**,
 
 ---
 
-## ⚡ Quick Fix for: `Failed to resolve plugin for module "expo-camera"`
-
-If you encounter this error in your terminal or PowerShell:
-```
-Failed to resolve plugin for module "expo-camera" relative to "...". Do you have node modules installed?
-Error: build command failed.
-```
-
-### Why it happened:
-EAS CLI needs dependencies installed in your local project before it reads plugins, or you can build directly without the external plugin since native camera permissions are already configured.
-
-### Two Quick Solutions:
-
-#### Solution A (Recommended - Install packages first):
-In your project directory (`remix-sharekita-—-nearby-file-transfer`), run:
-```powershell
-npm install
-eas build -p android --profile preview
-```
-
-#### Solution B (Direct build):
-We have updated `app.json` with `"plugins": []` while keeping full native Android and iOS camera permissions declared in `android.permissions` and `ios.infoPlist`. Re-download the project zip from the app or simply delete the `"plugins"` section in your local `app.json`, then run:
-```powershell
-eas build -p android --profile preview
-```
-
----
-
 ## 🛠️ Step-by-Step EAS Build Guide (Terminal & PowerShell)
 
 ### 1. Install CLI Tools Globally
@@ -79,4 +51,11 @@ npx expo start --tunnel
 * **`eas.json`**: EAS Build profiles configured for standalone APKs (`preview`) and Google Play (`production`).
 * **`server.ts`**: Node.js Express server + WebSocket signaling engine (`/ws`) on port `3000`.
 * **`src/native/NativeApp.tsx`**: Complete React Native mobile code with animations, radar scanning, file picker, and speed gauge.
-* **`package.json`**: Contains `expo`, `expo-camera`, `ws`, `express`.
+* **`package.json`**: Contains the Expo runtime and `sharekita-hotspot` local native module. Keep the module dependency and lockfile entry so EAS installs and autolinks the hotspot code in cloud builds.
+# Android direct pairing
+
+Android APK builds pair locally without `server.ts` or an internet relay. The receiver turns on the phone's regular Mobile Hotspot in Android Settings and shows a pairing QR in ShareKita. The sender scans it, selects the receiver's hotspot in Android's Wi-Fi chooser, and enters the hotspot password there if Android requests it. ShareKita then connects to the receiver and transfers files directly.
+
+This feature requires Android 10 (API 29) or later. It needs camera, nearby Wi-Fi access, and Android's normal network permission. Android does not let a regular EAS app silently enable the phone's tethering hotspot or read its saved hotspot password, so the receiver enables it in Settings and Android handles the sender's Wi-Fi join prompt. Leave the hotspot on while pairing and transferring; ShareKita does not turn it off.
+
+Build the APK with `npm run eas:build:preview`. The `sharekita-hotspot` Android module is a local package dependency and is autolinked into the EAS native build. Native hotspot changes require a fresh APK; Expo Go cannot load the custom Android module.

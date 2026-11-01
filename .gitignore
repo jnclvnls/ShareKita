@@ -1,5 +1,12 @@
 node_modules/
 .expo
+.expo-export/
+.gradle-userhome/
+android/.gradle/
+android/build/
+android/app/build/
+modules/**/android/.gradle/
+modules/**/android/build/
 dist/
 .env
 .env.local

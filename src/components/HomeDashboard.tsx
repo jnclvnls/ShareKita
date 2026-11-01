@@ -48,7 +48,7 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
   const totalBytesTransferred = recentTransfers.reduce((acc, r) => acc + r.totalSize, 0);
 
   return (
-    <div className="flex-1 flex flex-col p-4 sm:p-5 max-w-xl mx-auto w-full gap-5 pb-8">
+    <div className="flex-1 flex flex-col p-4 max-w-xl mx-auto w-full gap-4 pb-8">
       {/* Device Identity Pill Card */}
       <div className="bg-white rounded-2xl p-3.5 border border-slate-200/80 shadow-xs flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -83,7 +83,7 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
         {/* SEND BUTTON */}
         <button
           onClick={onStartSend}
-          className="group relative overflow-hidden bg-gradient-to-br from-amber-400 via-amber-400 to-yellow-500 p-5 rounded-3xl text-left shadow-md shadow-amber-300/40 hover:shadow-lg hover:shadow-amber-400/50 active:scale-[0.98] transition-all duration-200 flex flex-col justify-between h-44 cursor-pointer"
+          className="group relative overflow-hidden bg-gradient-to-br from-amber-400 via-amber-400 to-yellow-500 p-4 rounded-3xl text-left shadow-md shadow-amber-300/40 hover:shadow-lg hover:shadow-amber-400/50 active:scale-[0.98] transition-all duration-200 flex flex-col justify-between h-40 cursor-pointer"
         >
           <div className="flex items-center justify-between w-full">
             <div className="w-12 h-12 rounded-2xl bg-slate-900/10 backdrop-blur-xs flex items-center justify-center text-slate-900 transition-transform group-hover:scale-110">
@@ -103,7 +103,7 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
         {/* RECEIVE BUTTON */}
         <button
           onClick={onStartReceive}
-          className="group relative overflow-hidden bg-white border-2 border-amber-300 p-5 rounded-3xl text-left shadow-sm hover:border-amber-400 hover:shadow-md active:scale-[0.98] transition-all duration-200 flex flex-col justify-between h-44 cursor-pointer"
+          className="group relative overflow-hidden bg-white border-2 border-amber-300 p-4 rounded-3xl text-left shadow-sm hover:border-amber-400 hover:shadow-md active:scale-[0.98] transition-all duration-200 flex flex-col justify-between h-40 cursor-pointer"
         >
           {/* Subtle radar ripple effect */}
           <div className="absolute -right-4 -bottom-4 w-28 h-28 rounded-full bg-amber-100/60 pointer-events-none group-hover:scale-125 transition-transform duration-500" />
@@ -121,7 +121,7 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
           <div className="relative z-10">
             <h2 className="text-2xl font-black text-slate-900 tracking-tight">RECEIVE</h2>
             <p className="text-xs text-slate-600 font-medium mt-1 leading-snug">
-              Wait for nearby campus senders
+              Show a PIN and wait for a sender
             </p>
           </div>
         </button>
@@ -146,7 +146,7 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
           <div className="w-9 h-9 rounded-xl bg-amber-100/80 flex items-center justify-center text-amber-700">
             <Radio className="w-4 h-4" />
           </div>
-          <span className="text-[11px] font-semibold text-slate-800 text-center">My Code</span>
+          <span className="text-[11px] font-semibold text-slate-800 text-center">My PIN</span>
         </button>
 
         <button
@@ -175,9 +175,9 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <HardDrive className="w-4 h-4 text-slate-700" />
-            <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Local P2P Activity</h3>
+            <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">This Session</h3>
           </div>
-          <span className="text-xs text-slate-500 font-medium">Session Metrics</span>
+          <span className="text-[11px] text-slate-500 font-medium">Resets when you close the app</span>
         </div>
 
         <div className="grid grid-cols-3 gap-2 text-center">
@@ -195,9 +195,9 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
           </div>
           <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
             <div className="text-lg font-black text-emerald-600 tabular-nums">
-              100%
+              {recentTransfers.length}
             </div>
-            <div className="text-[11px] text-slate-500 font-medium mt-0.5">Direct P2P</div>
+            <div className="text-[11px] text-slate-500 font-medium mt-0.5">Transfers</div>
           </div>
         </div>
       </div>
